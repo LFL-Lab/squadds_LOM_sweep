@@ -179,7 +179,7 @@ def cross_LOM_sweep(design, sweep_opts):
         # example: update single setting
         loma.sim.setup.max_passes = 30
         loma.sim.setup.min_converged_passes = 5
-        loma.sim.setup.percent_error = 0.1
+        loma.sim.setup.percent_error = 0.05
         loma.sim.setup.auto_increase_solution_order = 'False'
         loma.sim.setup.solution_order = 'Medium'
 
