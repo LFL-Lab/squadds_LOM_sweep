@@ -130,7 +130,7 @@ def NCap_LOM_sweep(design, sweep_opts):
         loma.sim.setup.solution_order = 'Medium'
 
         loma.sim.setup.name = 'lom_setup'
-
+        
         loma.sim.run(name = 'LOMv2.01', components=[coupler.name],
         open_terminations=[(coupler.name, pin_name) for pin_name in coupler.pin_names])
         cap_df = loma.sim.capacitance_matrix
@@ -163,6 +163,8 @@ def NCap_LOM_sweep(design, sweep_opts):
 def cross_LOM_sweep(design, sweep_opts):
     for param in extract_QSweep_parameters(sweep_opts):
         print(param)
+        if float(param["connection_pads"]["readout"]["claw_length"][:-2]) >= float(param["cross_length"][:-2]) - float(param["connection_pads"]["readout"]["claw_width"][:-2]) + float(param["connection_pads"]["readout"]["ground_spacing"][:-2]) - 1:
+            continue
         cross = create_cross(param, design)
         # coupler = create_coupler(param, design)
         # coupler.options[""]
@@ -182,6 +184,14 @@ def cross_LOM_sweep(design, sweep_opts):
         loma.sim.setup.solution_order = 'Medium'
 
         loma.sim.setup.name = 'lom_setup'
+
+        loma.sim.renderer.start()
+
+        loma.sim.renderer.pinfo.design_name = f"cross_LOM_groundspacing{cross.options.connection_pads.readout.ground_spacing}_crosslen{cross.options.cross_length}_clawlen{cross.options.connection_pads.readout.claw_length}"
+        project_name = loma.sim.renderer.pinfo.project_name
+        design_name = loma.sim.renderer.pinfo.design_name
+
+        setMaterialProperties(project_name, design_name, solutiontype="Capacitive")
 
         loma.sim.run(name = 'LOMv2.01', components=[cross.name],
         open_terminations=[(cross.name, pin_name) for pin_name in cross.pin_names])
