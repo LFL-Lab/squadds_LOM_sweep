@@ -166,11 +166,6 @@ def cross_LOM_sweep(design, sweep_opts):
             continue
         cross = create_cross(param, design)
         # print(f"cross_LOM_groundspacing{cross.options.connection_pads.readout.ground_spacing}_crosslen{cross.options.cross_length}_clawlen{cross.options.connection_pads.readout.claw_length}")
-        coupler = create_coupler(param, design)
-        coupler.options[""]
-        cpw = create_cpw(param["cpw_opts"], design)
-        gui.rebuild()
-        gui.autoscale()
 
         loma = LOManalysis(design, "q3d")
         loma.sim.setup.reuse_selected_design = False
