@@ -162,15 +162,15 @@ def NCap_LOM_sweep(design, sweep_opts):
 
 def cross_LOM_sweep(design, sweep_opts):
     for param in extract_QSweep_parameters(sweep_opts):
-        print(param)
         if float(param["connection_pads"]["readout"]["claw_length"][:-2]) >= float(param["cross_length"][:-2]) - float(param["connection_pads"]["readout"]["claw_width"][:-2]) + float(param["connection_pads"]["readout"]["ground_spacing"][:-2]) - 1:
             continue
         cross = create_cross(param, design)
-        # coupler = create_coupler(param, design)
-        # coupler.options[""]
-        # cpw = create_cpw(param["cpw_opts"], design)
-        # gui.rebuild()
-        # gui.autoscale()
+        # print(f"cross_LOM_groundspacing{cross.options.connection_pads.readout.ground_spacing}_crosslen{cross.options.cross_length}_clawlen{cross.options.connection_pads.readout.claw_length}")
+        coupler = create_coupler(param, design)
+        coupler.options[""]
+        cpw = create_cpw(param["cpw_opts"], design)
+        gui.rebuild()
+        gui.autoscale()
 
         loma = LOManalysis(design, "q3d")
         loma.sim.setup.reuse_selected_design = False
@@ -202,11 +202,11 @@ def cross_LOM_sweep(design, sweep_opts):
         data_df = {
             "design_options": design.components[cross.name].options,
             "data": {
-                "cross_to_ground": cap_df.loc['cross_Q']['ground_main_plane'],
-                "claw_to_ground": cap_df.loc['c_connector_arm_Q']['ground_main_plane'],
-                "cross_to_claw": cap_df.loc['cross_Q']['c_connector_arm_Q'],
-                "cross_to_cross": cap_df.loc['cross_Q']['ground_main_plane'],
-                "claw_to_claw": cap_df.loc['c_connector_arm_Q']['c_connector_arm_Q'],
+                "cross_to_ground": cap_df.loc[f'cross_{cross.name}']['ground_main_plane'],
+                "claw_to_ground": cap_df.loc[f'readout_connector_arm_{cross.name}']['ground_main_plane'],
+                "cross_to_claw": cap_df.loc[f'cross_{cross.name}'][f'readout_connector_arm_{cross.name}'],
+                "cross_to_cross": cap_df.loc[f'cross_{cross.name}']['ground_main_plane'],
+                "claw_to_claw": cap_df.loc[f'readout_connector_arm_{cross.name}'][f'readout_connector_arm_{cross.name}'],
                 "ground_to_ground": cap_df.loc['ground_main_plane']['ground_main_plane']
             },
             "sim_info": {

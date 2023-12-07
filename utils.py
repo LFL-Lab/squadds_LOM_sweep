@@ -239,7 +239,7 @@ def create_claw(opts, cpw_length, design):
 def create_cross(opts, design):
     # opts["orientation"] = "-90"
     # opts["pos_x"] = "-1500um" if cpw_length > 2500 else "-1000um"
-    claw = TransmonCross(design, 'claw', options=opts)
+    claw = TransmonCross(design, 'cross', options=opts)
     return claw
 
 def create_coupler(opts, design):
@@ -247,14 +247,14 @@ def create_coupler(opts, design):
     cplr = CapNInterdigitalTee(design, 'cplr', options = opts) if "finger_count" in opts.keys() else CoupledLineTee(design, 'cplr', options = opts)
     return cplr
 
-def create_cpw(opts, cplr, design):
+def create_cpw(opts, cross, cplr, design):
     opts.update({"lead" : Dict(
                             start_straight = "50um",
                             # end_straight = "50um"
                             )})
     opts.update({"pin_inputs" : Dict(start_pin = Dict(component = 'cplr',
                                                     pin = 'second_end'),
-                                   end_pin = Dict(component = 'claw',
+                                   end_pin = Dict(component = cross.name,
                                                   pin = 'readout'))})
     opts.update({"meander" : Dict(
                                 spacing = "100um",
